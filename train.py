@@ -3,7 +3,6 @@ import time
 import torch.nn
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.dqn import MultiInputPolicy
 import pydirectinput
 from util.touhou2D import TouHouEnv
 from util.window import activate_window
@@ -11,12 +10,13 @@ from util.helpers import get_timestr
 
 model = None
 mean_reward = -1_000
+mean_reward_prev = -1_000_000
 std_reward = 0
-prev_mean = -1_000_000
-prev_std = 0
+std_reward_prev = 0
 policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256])
-# MyPolicy = MultiInputPolicy(net_arch=[64, 64],
-#                             activation_fn=torch.nn.Tanh)
+
+# 是否需要保存模型和日志小开关 测试不需要输出时可用False
+to_file = True
 
 # 引入环境
 env = TouHouEnv()
@@ -26,7 +26,7 @@ buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "
 print('model_path:', model_path)
 
 # Loop Start
-while mean_reward > prev_mean:
+while mean_reward > mean_reward_prev:
     # 当表现比上次训练的好
     if model is None:  # 第一轮训练 创建模型
         # 创建模型 需要调参！4
@@ -46,7 +46,7 @@ while mean_reward > prev_mean:
                     exploration_final_eps=0.05,  # 随机行动概率的最终值
                     max_grad_norm=10,  # 梯度剪裁的最高值
                     stats_window_size=100,  # 展开记录的窗口大小
-                    tensorboard_log='./log/tensorboard/',  # *创建tensorboard log
+                    tensorboard_log='./log/tensorboard/'if to_file else None,  # *创建tensorboard log
                     policy_kwargs=policy_kwargs,  # * 创建时传递给policy的额外参数
                     device='cuda:0',  # gpu训练
                     verbose=1)
@@ -67,15 +67,23 @@ while mean_reward > prev_mean:
 
     # 模型评估evaluate
     # n_eval_episodes 表示测试回合的总数，用于计算模型的平均奖励和标准偏差。默认值为10
-    prev_mean, prev_std = mean_reward, std_reward
+    mean_reward_prev, std_reward_prev = mean_reward, std_reward
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10, render=False)
     print(mean_reward, std_reward)  # 多step中reward的平均值和标准差
 
+    #
+    # print(env.score_list)
+    # print(env.power_list)
+
     # 判断是否更优优则存储
-    if mean_reward > prev_mean:
+    if mean_reward > mean_reward_prev and to_file:
         model.save(model_path)
         model.save_replay_buffer(buffer_path)
         env = model.get_env()
 
+    if not to_file:
+        break
+
 # LoopEnd
 env.close()
+

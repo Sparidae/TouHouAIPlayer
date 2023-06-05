@@ -5,6 +5,9 @@ import time
 from util.get_memory_data import GameData
 from util.send_input import Keyboard
 from cfg.constants import *
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import stats
 
 game = GameData()
 
@@ -80,7 +83,40 @@ def _way():
 if __name__ == "__main__":
     time.sleep(3)
     # get_max_volume()
-    _way()
+    # _way()
+    a = []
+    b = []
+    print(len(a), len(b))
+    a = [x for x in a if x != 0]
+    b = [x for x in b if x != 0]
+    a = np.sort(a)
+    b = np.sort(b)
+    print(a)
+    print(b)
+    print(len(a), len(b))
+    # print(a[int(len(a) / 2)], a[int(len(a) / 4)], a[int(len(a) / 8)])
+    # density = stats.gaussian_kde(a)
+    # density = stats.gaussian_kde(data)
+    # x = np.linspace(min(a), max(a), len(a))
+    # plt.plot(a, density(a))
+    a = [x for x in a if x <= 500]
+    b = [x for x in b if x > 0]
+    print(len(a), len(b))
+    c = [x for x in b if x <5]
+    print(len(c))
+    c = [x for x in b if x > 10 and x < 40]
+    print(len(c))
+    c = [x for x in b if x >= 40]
+    print(len(c))
+    plt.hist(a, bins=50)
+    # xticks = np.linspace(0, 500, num=10)
+    # xticklabels = ['%.2f' % i for i in xticks]
+    # plt.xticks(xticks, xticklabels)
+    plt.savefig('output.png', dpi=500)
+    plt.show()
+    plt.hist(b, bins=50)
+    plt.show()
+
     while True:
         # timer_pressbutton(1000)
         # timer_getdata(200)

@@ -9,6 +9,7 @@ from cfg.config import *
 from util.send_input import Keyboard
 from cfg.constants import *
 
+
 class TouHouEnv(gym.Env):
     def __init__(self):
         # 定义一些控制参数
@@ -46,6 +47,11 @@ class TouHouEnv(gym.Env):
 
         # 计数
         self.counts = 0
+
+        # 测试score和power增量
+        # self.f = open('increase.txt', 'w')
+        # self.score_list = [0, ]
+        # self.power_list = [0, ]
         pass
 
     def step(self, action):  # 用于编写智能体与环境交互的逻辑，它接受action的输入，给出下一时刻的状态、当前动作的回报、是否结束当前episode及调试信息
@@ -122,6 +128,10 @@ class TouHouEnv(gym.Env):
             if self.state['power'][0] > last_state['power'][0]:  # power提升 和power挂钩？
                 reward += 2
 
+        # 测试部分 增加的
+        # self.score_list.append(self.state['score'][0] - last_state['score'][0])
+        # self.power_list.append(self.state['power'][0] - last_state['power'][0])
+
         # 智能体agent 与 环境environment、状态states、动作actions、回报rewards等等
         # observation->state  reward->int  done->bool  info->dict
         return self.state, reward, done, {}
@@ -144,6 +154,10 @@ class TouHouEnv(gym.Env):
         else:  # 游戏刚开始的情况 现在方案：开始游戏后开始训练（ 取色脚本？ 图像识别？
             pass
         self.state = self._get_state()
+
+        # '%d %d %d %d' print('%d %d %d %d' % (max(self.score_list), min(self.score_list), max(self.power_list),
+        # min(self.power_list))) print('%.2f %.2f' % (sum(self.score_list) / len(self.score_list),
+        # sum(self.power_list) / len(self.power_list)))
         return self.state
 
     def _get_state(self) -> dict:
@@ -161,10 +175,9 @@ class TouHouEnv(gym.Env):
 
     def close(self):
         # 环境清理 文件释放等等 无
+        # self.f.close()  # 测试文件
         return None
-
 
 
 if __name__ == "__main__":
     time.sleep(3)
-
