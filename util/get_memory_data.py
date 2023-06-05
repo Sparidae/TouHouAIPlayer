@@ -5,8 +5,8 @@ import sys
 import os
 import time
 import numpy as np
-from util.config import *
-from util.constants import *
+from cfg.config import *
+from cfg.constants import *
 
 # WindowsAPI Func
 kernel32 = ctypes.WinDLL('kernel32')

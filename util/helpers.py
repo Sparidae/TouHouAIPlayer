@@ -1,16 +1,10 @@
-import gym
 import os
-from gym import spaces
 import time
-import numpy as np
-import pydirectinput
 # import sys
 # sys.path.append('E:\\车万\\project')
 from util.get_memory_data import GameData
-from util.window import activate_window
-from util.config import *
 from util.send_input import Keyboard
-from util.constants import *
+from cfg.constants import *
 
 game = GameData()
 

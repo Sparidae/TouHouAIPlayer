@@ -1,5 +1,3 @@
-from .config import *
-from .constants import *
 from .get_memory_data import GameData
 from .send_input import Keyboard
 from .touhou2D import TouHouEnv

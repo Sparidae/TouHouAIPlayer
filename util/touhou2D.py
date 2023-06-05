@@ -5,9 +5,9 @@ import numpy as np
 import pydirectinput
 from util.get_memory_data import GameData
 from util.window import activate_window
-from util.config import *
+from cfg.config import *
 from util.send_input import Keyboard
-from util.constants import *
+from cfg.constants import *
 
 class TouHouEnv(gym.Env):
     def __init__(self):
@@ -36,7 +36,7 @@ class TouHouEnv(gym.Env):
             'power': spaces.Box(low=0, high=101, shape=(1,)),
             'extra_life': spaces.Box(low=0, high=10, shape=(1,)),
         })
-        self.action_space = spaces.Discrete(9)  # 状态空间 0，1，2，3 上下左右 4，5，6，7 shift 变慢并收束子弹 8 x对应消耗1p清空弹幕并无敌一段时间
+        self.action_space = spaces.Discrete(9)  # 状态空间 0，1，2，3 上下左右 4，5，6，7 两两组合 8 x对应消耗1p清空弹幕并无敌一段时间
 
         # 游戏数据源
         self.datasource = GameData()
@@ -73,35 +73,35 @@ class TouHouEnv(gym.Env):
             time.sleep(PRESS_INTERVAL)
             Keyboard.releaseByScanCode(SC_RIGHT)
             reward = 2
-        if action == 4:  # shift上
-            Keyboard.pressByScanCode(SC_SHIFT)
-            Keyboard.pressByScanCode(SC_UP)
-            time.sleep(PRESS_INTERVAL)
-            Keyboard.releaseByScanCode(SC_UP)
-            Keyboard.releaseByScanCode(SC_SHIFT)
-            reward = 2
-        if action == 5:  # shift下
-            Keyboard.pressByScanCode(SC_SHIFT)
+        if action == 4:  # 右下
+            Keyboard.pressByScanCode(SC_RIGHT)
             Keyboard.pressByScanCode(SC_DOWN)
             time.sleep(PRESS_INTERVAL)
+            Keyboard.releaseByScanCode(SC_RIGHT)
             Keyboard.releaseByScanCode(SC_DOWN)
-            Keyboard.releaseByScanCode(SC_SHIFT)
             reward = 2
-        if action == 6:  # shift左
-            Keyboard.pressByScanCode(SC_SHIFT)
+        if action == 5:  # 左上
             Keyboard.pressByScanCode(SC_LEFT)
+            Keyboard.pressByScanCode(SC_UP)
             time.sleep(PRESS_INTERVAL)
             Keyboard.releaseByScanCode(SC_LEFT)
-            Keyboard.releaseByScanCode(SC_SHIFT)
+            Keyboard.releaseByScanCode(SC_UP)
             reward = 2
-        if action == 7:  # shift右
-            Keyboard.pressByScanCode(SC_SHIFT)
+        if action == 6:  # 左下
+            Keyboard.pressByScanCode(SC_LEFT)
+            Keyboard.pressByScanCode(SC_DOWN)
+            time.sleep(PRESS_INTERVAL)
+            Keyboard.releaseByScanCode(SC_LEFT)
+            Keyboard.releaseByScanCode(SC_DOWN)
+            reward = 2
+        if action == 7:  # 右上
             Keyboard.pressByScanCode(SC_RIGHT)
+            Keyboard.pressByScanCode(SC_UP)
             time.sleep(PRESS_INTERVAL)
             Keyboard.releaseByScanCode(SC_RIGHT)
-            Keyboard.releaseByScanCode(SC_SHIFT)
+            Keyboard.releaseByScanCode(SC_UP)
             reward = 2
-        if action == 8:  # x
+        if action == 8:  # X
             Keyboard.pressByScanCode(SC_X)
             time.sleep(0.01)
             Keyboard.releaseByScanCode(SC_X)

@@ -6,6 +6,9 @@ MAX_ENEMY = 100  # 100
 MAX_BULLET = 2000  # 2000
 MAX_LASER = 250  # 250
 
+# TouHou2D 控制SendInput的输入间隔
+PRESS_INTERVAL = 0.02
+
 # DQN模型参数
 DQN_learning_rate = 0.0001  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
 DQN_buffer_size = 10_000  # *一个整数，表示回放缓存的大小。它用于存储先前的观测和动作，以便在训练期间进行回放 默认为1_000_000
