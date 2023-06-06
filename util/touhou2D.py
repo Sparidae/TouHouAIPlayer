@@ -140,7 +140,7 @@ class TouHouEnv(gym.Env):
 
         # 计算reward 生命部分
         if self.state['extra_life'][0] < last_state['extra_life'][0]:  # 掉生命了
-            reward = -220
+            reward = -300
             self.dead_inv_frames = 40
         elif self.state['extra_life'][0] > last_state['extra_life'][0]:  # 残机增加
             reward = 300
@@ -151,9 +151,9 @@ class TouHouEnv(gym.Env):
         if 100 < self.step_count < 10100:
             self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (10000 - (self.step_count - 100))  # 1-3
         if 0 < delta_score <= 500:  # 增分且小于500
-            score_reward = 2
+            score_reward = 3
         elif delta_score > 500:
-            score_reward = 4
+            score_reward = 2  # 不鼓励跑到最前面吃分
         score_reward = self.score_reward_rate * score_reward
         reward += score_reward
 
