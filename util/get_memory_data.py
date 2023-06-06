@@ -102,14 +102,14 @@ class GameData:
         self.__data_update()
         print('Player(%.2f,%.2f)' % (self.player.x, self.player.y))
         print('score:%d | power:%.2f | extra_life:%d' % (self.score * 10, self.power / 20, self.extra_life))
-        for i in self.powers:
-            print('power:%.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h))
-        for i in self.enemy:
-            print('enemy:%.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h))
-        for i in self.bullet:
-            print('bullet:%.2f %.2f %.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h, i.dx, i.dy))
-        for i in self.laser:
-            print('laser:%.2f %.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h, i.arc))
+        # for i in self.powers:
+        #     print('power:%.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h))
+        # for i in self.enemy:
+        #     print('enemy:%.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h))
+        # for i in self.bullet:
+        #     print('bullet:%.2f %.2f %.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h, i.dx, i.dy))
+        # for i in self.laser:
+        #     print('laser:%.2f %.2f %.2f %.2f %.2f' % (i.x, i.y, i.w, i.h, i.arc))
         time.sleep(0.1)
         _ = os.system('cls')  # windows
 
@@ -279,7 +279,10 @@ class GameData:
 
 
 if __name__ == "__main__":
-    _ = os.system('cls')
+    while True:
+        game = GameData()
+        game.print_formatted_data()
+        # _ = os.system('cls')
 
 '''获取数据量的最大值
     max_powers = 0

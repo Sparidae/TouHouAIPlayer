@@ -177,6 +177,8 @@ class TouHouEnv(gym.Env):
             self.x_inv_frames -= 1
 
         # 计算reward 触发线上惩罚
+        if self.state['player'][1] < 130:
+            reward += -2
 
         # 测试部分 增加的
         # self.score_list.append(self.state['score'][0] - last_state['score'][0])
