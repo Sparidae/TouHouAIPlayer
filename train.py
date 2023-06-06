@@ -55,7 +55,9 @@ while mean_reward > mean_reward_prev:
         model.load_replay_buffer(buffer_path)
 
     # 准备工作
-    print('---training will start in 2 seconds---')
+    if not to_file:
+        print('---Warning:Model&Log will not be saved---')
+    print('---Training will start in 2 seconds---')
     time.sleep(2)
     activate_window()  # 激活窗口
     pydirectinput.press('enter')
@@ -71,15 +73,15 @@ while mean_reward > mean_reward_prev:
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10, render=False)
     print(mean_reward, std_reward)  # 多step中reward的平均值和标准差
 
-    #
-    # print(env.score_list)
-    # print(env.power_list)
-
     # 判断是否更优优则存储
     if mean_reward > mean_reward_prev and to_file:
         model.save(model_path)
         model.save_replay_buffer(buffer_path)
         env = model.get_env()
+
+    # 释放按键
+    pydirectinput.keyUp('z')
+    pydirectinput.keyUp('ctrl')
 
     if not to_file:
         break
