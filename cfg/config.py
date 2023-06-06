@@ -7,11 +7,11 @@ MAX_BULLET = 2000  # 2000
 MAX_LASER = 250  # 250
 
 # TouHou2D 控制SendInput的输入间隔
-PRESS_INTERVAL = 0.02
+PRESS_INTERVAL = 0.015
 
 # Reward
 WALL_PUNISH = -6
-MAX_SCORE_REWARD_RATE = 3 # 最高SCORE-reward倍率
+MAX_SCORE_REWARD_RATE = 3  # 最高SCORE-reward倍率
 
 # DQN模型参数
 DQN_learning_rate = 0.0001  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
