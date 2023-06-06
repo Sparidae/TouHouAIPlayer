@@ -163,7 +163,7 @@ class TouHouEnv(gym.Env):
         if 0 < delta_power <= 10:  # 增power小于10 自己捡到的
             power_reward = 2
         elif delta_power > 10:  # 放大或者清空弹幕
-            power_reward = 6
+            power_reward = 1  # 4
         reward += power_reward
 
         # 计算reward 无敌部分
@@ -175,6 +175,8 @@ class TouHouEnv(gym.Env):
         if self.x_inv_frames > 0:
             reward += -0.33
             self.x_inv_frames -= 1
+
+        # 计算reward 触发线上惩罚
 
         # 测试部分 增加的
         # self.score_list.append(self.state['score'][0] - last_state['score'][0])
