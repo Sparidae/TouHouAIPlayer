@@ -177,7 +177,7 @@ class TouHouEnv(gym.Env):
             self.x_inv_frames -= 1
 
         # 计算reward 触发线上惩罚
-        if self.state['player'][1] < 130:
+        if self.state['player'][1] < 130:  # 处于ItemGetBorderLine上
             reward += -2
 
         # 测试部分 增加的
