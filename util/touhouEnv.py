@@ -5,34 +5,28 @@ import numpy as np
 import pydirectinput
 from util.get_memory_data import GameData
 from util.window import activate_window
-from cfg.config import *
 from util.send_input import Keyboard
 from cfg.constants import *
+from cfg.config import *
 
 
 class TouHouEnv(gym.Env):
     def __init__(self):
-        # 定义一些控制参数
-        self._X = 200  # x坐标的左右上限  184和-184
-        self._PY = 450  # y坐标的上限 实为432
-        self._NY = 0  # y坐标的下限 32
-        self._ARC = 3.2  # 角度的 -pi~pi
-
         # 定义状态空间和动作空间
         self.observation_space = spaces.Dict({
-            'powers': spaces.Box(low=np.array(MAX_POWERS * [[-self._X, self._NY, 0, 0]]),
-                                 high=np.array(MAX_POWERS * [[self._X, self._PY, 100, 100]]),
+            'powers': spaces.Box(low=np.array(MAX_POWERS * [[-L_X, L_NY, 0, 0]]),
+                                 high=np.array(MAX_POWERS * [[L_X, L_PY, 100, 100]]),
                                  shape=(MAX_POWERS, 4)),
-            'enemy': spaces.Box(low=np.array(MAX_ENEMY * [[-self._X, self._NY, 0, 0]]),
-                                high=np.array(MAX_ENEMY * [[self._X, self._PY, 100, 100]]),
+            'enemy': spaces.Box(low=np.array(MAX_ENEMY * [[-L_X, L_NY, 0, 0]]),
+                                high=np.array(MAX_ENEMY * [[L_X, L_PY, 100, 100]]),
                                 shape=(MAX_ENEMY, 4)),
-            'bullet': spaces.Box(low=np.array(MAX_BULLET * [[-self._X, self._NY, 0, 0, 0, 0]]),
-                                 high=np.array(MAX_BULLET * [[self._X, self._PY, 100, 100, 100, 100]]),
+            'bullet': spaces.Box(low=np.array(MAX_BULLET * [[-L_X, L_NY, 0, 0, 0, 0]]),
+                                 high=np.array(MAX_BULLET * [[L_X, L_PY, 100, 100, 100, 100]]),
                                  shape=(MAX_BULLET, 6)),
-            'laser': spaces.Box(low=np.array(MAX_LASER * [[-self._X, self._NY, 0, 0, -self._ARC]]),
-                                high=np.array(MAX_LASER * [[self._X, self._PY, 100, 100, self._ARC]]),
+            'laser': spaces.Box(low=np.array(MAX_LASER * [[-L_X, L_NY, 0, 0, -L_ARC]]),
+                                high=np.array(MAX_LASER * [[L_X, L_PY, 100, 100, L_ARC]]),
                                 shape=(MAX_LASER, 5)),
-            'player': spaces.Box(low=np.array([-self._X, self._NY]), high=np.array([self._X, self._PY]), shape=(2,)),
+            'player': spaces.Box(low=np.array([-L_X, L_NY]), high=np.array([L_X, L_PY]), shape=(2,)),
             'score': spaces.Box(low=0, high=100_000_000, shape=(1,)),  # !警惕Discrete 会申请大量内存
             'power': spaces.Box(low=0, high=101, shape=(1,)),
             'extra_life': spaces.Box(low=0, high=10, shape=(1,)),
@@ -108,15 +102,15 @@ class TouHouEnv(gym.Env):
             Keyboard.pressByScanCode(SC_X)
             time.sleep(0.01)
             Keyboard.releaseByScanCode(SC_X)
-            reward = -10
-            self.x_inv_frames = 30
+            reward = X_INSTANT_PUNISH
+            self.x_inv_frames = MAX_X_INV_FRAME
         if action == 9:  # 什么也不做
             time.sleep(PRESS_INTERVAL)
             pass
 
         # 计算reward 移动奖励
         if action != 8:
-            reward = 2
+            reward = MOVE_REWARD
 
         # 计算reward 撞墙部分 未更新的状态+action说明已经撞墙 需要惩罚
         if self.state['player'][0] - (-184) < 1:  # 左墙
@@ -140,20 +134,20 @@ class TouHouEnv(gym.Env):
 
         # 计算reward 生命部分
         if self.state['extra_life'][0] < last_state['extra_life'][0]:  # 掉生命了
-            reward = -300
-            self.dead_inv_frames = 40
+            reward = DEAD_PUNISH
+            self.dead_inv_frames = MAX_DEAD_INV_FRAME
         elif self.state['extra_life'][0] > last_state['extra_life'][0]:  # 残机增加
-            reward = 300
+            reward = OBTAIN_LIFE_REWARD
 
         # 计算reward score部分  步进奖励
         score_reward = 0
         delta_score = self.state['score'][0] - last_state['score'][0]
-        if 100 < self.step_count < 10100:
-            self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (self.step_count - 100) / 10000  # 1-3 随着步数增加提升奖励
+        if 100 < self.step_count < 5100:
+            self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (self.step_count - 100) / 5000  # 1-3 随着步数增加提升奖励
         if 0 < delta_score <= 500:  # 增分且小于500
-            score_reward = 2
+            score_reward = SCORE_INCREASE_1
         elif delta_score > 500:
-            score_reward = 1  # 不鼓励跑到最前面吃分
+            score_reward = SCORE_INCREASE_2  # 不鼓励跑到最前面吃分
         score_reward = self.score_reward_rate * score_reward
         reward += score_reward
 
@@ -161,24 +155,24 @@ class TouHouEnv(gym.Env):
         power_reward = 0
         delta_power = self.state['power'][0] - last_state['power'][0]
         if 0 < delta_power <= 10:  # 增power小于10 自己捡到的
-            power_reward = 2
+            power_reward = POWER_INCREASE_1
         elif delta_power > 10:  # 放大或者清空弹幕
-            power_reward = 1  # 4
+            power_reward = POWER_INCREASE_2  # 4
         reward += power_reward
 
         # 计算reward 无敌部分
         if self.dead_inv_frames > 0:  # 处于无敌帧内减reward
-            reward += -2
+            reward += DEAD_INV_PUNISH
             self.dead_inv_frames -= 1
 
         # 计算reward x无敌部分
         if self.x_inv_frames > 0:
-            reward += -0.33
+            reward += X_INV_PUNISH
             self.x_inv_frames -= 1
 
         # 计算reward 触发线上惩罚
         if self.state['player'][1] < 130:  # 处于ItemGetBorderLine上
-            reward += -6
+            reward += BORDER_LINE_PUNISH
 
         # 测试部分 增加的
         # self.score_list.append(self.state['score'][0] - last_state['score'][0])

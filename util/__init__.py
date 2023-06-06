@@ -1,6 +1,6 @@
 from .get_memory_data import GameData
 from .send_input import Keyboard
-from .touhou2D import TouHouEnv
+from .touhouEnv import TouHouEnv
 from .window import activate_window
 
 __all__ = ['TouHouEnv',
