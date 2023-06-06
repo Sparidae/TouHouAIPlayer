@@ -17,6 +17,7 @@ policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256])
 
 # 是否需要保存模型和日志小开关 测试不需要输出时可用False
 to_file = True
+has_trained_before = False
 
 # 引入环境
 env = TouHouEnv()
@@ -61,7 +62,11 @@ while mean_reward > mean_reward_prev:
     print('---Training will start in 2 seconds---')
     time.sleep(2)
     activate_window()  # 激活窗口
-    pydirectinput.press('enter')
+    if has_trained_before:
+        env.reset()
+    else:
+        pydirectinput.press('enter')
+        has_trained_before = True
     pydirectinput.keyDown('z')
     pydirectinput.keyDown('ctrl')  # 尝试是否管用能跳过剧情
 

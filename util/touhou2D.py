@@ -151,9 +151,9 @@ class TouHouEnv(gym.Env):
         if 100 < self.step_count < 10100:
             self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (self.step_count - 100) / 10000  # 1-3 随着步数增加提升奖励
         if 0 < delta_score <= 500:  # 增分且小于500
-            score_reward = 3
+            score_reward = 2
         elif delta_score > 500:
-            score_reward = 2  # 不鼓励跑到最前面吃分
+            score_reward = 1  # 不鼓励跑到最前面吃分
         score_reward = self.score_reward_rate * score_reward
         reward += score_reward
 
@@ -178,7 +178,7 @@ class TouHouEnv(gym.Env):
 
         # 计算reward 触发线上惩罚
         if self.state['player'][1] < 130:  # 处于ItemGetBorderLine上
-            reward += -3
+            reward += -6
 
         # 测试部分 增加的
         # self.score_list.append(self.state['score'][0] - last_state['score'][0])
