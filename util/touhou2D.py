@@ -178,7 +178,7 @@ class TouHouEnv(gym.Env):
 
         # 计算reward 触发线上惩罚
         if self.state['player'][1] < 130:  # 处于ItemGetBorderLine上
-            reward += -2
+            reward += -3
 
         # 测试部分 增加的
         # self.score_list.append(self.state['score'][0] - last_state['score'][0])

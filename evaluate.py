@@ -1,3 +1,4 @@
+import os
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 from util.touhou2D import TouHouEnv
@@ -7,7 +8,9 @@ import pydirectinput
 
 # 读取模型
 env = TouHouEnv()  # !!
-model = DQN.load("model/6.5 20wtstp 0.2-0.1/TouhouAI.pkl")
+model_dir = '2023-06-06_18-27m'  # 要查看的模型路径
+model_path = os.path.join('model', model_dir, 'TouHouAI')
+model = DQN.load(model_path)
 
 # 准备工作
 print('---evaluation will start in 2 seconds---')
@@ -27,4 +30,3 @@ while not done:  # 运行时运行模型
 env.close()
 
 print(score)
-
