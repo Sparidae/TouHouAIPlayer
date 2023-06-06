@@ -149,7 +149,7 @@ class TouHouEnv(gym.Env):
         score_reward = 0
         delta_score = self.state['score'][0] - last_state['score'][0]
         if 100 < self.step_count < 10100:
-            self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (10000 - (self.step_count - 100))  # 1-3
+            self.score_reward_rate = 1 + (MAX_SCORE_REWARD_RATE - 1) * (self.step_count - 100) / 10000  # 1-3 随着步数增加提升奖励
         if 0 < delta_score <= 500:  # 增分且小于500
             score_reward = 3
         elif delta_score > 500:
