@@ -1,5 +1,46 @@
 # STG(弹幕射击游戏)AI
 
+---
+
+开发中
+
+## 介绍
+
+基于强化学习模型训练的弹幕游戏AI，以《东方风神录》为例
+
+## 环境安装
+
+```bash
+conda create -n touhou python=3.8.16
+conda activate touhou
+
+conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3
+
+pip install psutil
+pip install pywin32 # 可以不用
+pip install pydirectinput 
+pip install stable_baselines3
+```
+
+## 查看log信息
+
+```bash
+conda activate touhou
+tensorboard --logdir .\log\tensorboard\  查看log
+```
+
+## 保存的模型环境
+
+== SAVED MODEL SYSTEM INFO ==
+
+- OS: Windows-10-10.0.22631-SP0 10.0.22631
+- Python: 3.8.16
+- Stable-Baselines3: 1.8.0
+- PyTorch: 1.11.0
+- GPU Enabled: True
+- Numpy: 1.23.5
+- Gym: 0.21.0
+
 ## 数据分布
 
 1wstep+evaluate,
@@ -17,17 +58,7 @@ power的话比较特殊，总共也是12385条数据，除去0
 上面这个是power增加的分布
 
 
-## 保存的模型环境
 
-== SAVED MODEL SYSTEM INFO ==
-
-- OS: Windows-10-10.0.22631-SP0 10.0.22631
-- Python: 3.8.16
-- Stable-Baselines3: 1.8.0
-- PyTorch: 1.11.0
-- GPU Enabled: True
-- Numpy: 1.23.5
-- Gym: 0.21.0
 
 ## reward思路
 
@@ -49,26 +80,7 @@ power的话比较特殊，总共也是12385条数据，除去0
 - [ ] 使用取色脚本或者图像识别进行正确的游戏重置操作
 - [ ] 代码重构 常量整理到文件中
 
-## 查看log信息
 
-```bash
-conda activate touhou
-tensorboard --logdir .\log\tensorboard\  查看log
-```
-
-## 环境安装
-
-```bash
-conda create -n touhou python=3.8.16
-conda activate touhou
-
-conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3
-
-pip install psutil
-pip install pywin32 # 可以不用
-pip install pydirectinput 
-pip install stable_baselines3
-```
 
 ## 运行
 
