@@ -4,8 +4,7 @@ import win32api
 import win32com.client
 import win32con
 import win32gui
-
-GAME_TITLE = '东方风神录 ～ Mountain of Faith. ver 1.00a '
+from cfg.constants import *
 
 
 def activate_window():
@@ -16,6 +15,7 @@ def activate_window():
     # shell.SendKeys('%')  # alt
     win32gui.SetForegroundWindow(hwnd)  # 设置为当前活动窗口
     win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)  # 保持窗口
+
 
 
 # def _window_enum_callback(hwnd, wildcard):

@@ -3,10 +3,10 @@ import torch
 # 配置文件 存储参数
 
 # TouHouEnv环境参数，规定了数据大小，必要情况下（如内存不足）可修改数量，但可能会面临信息丢失导致的模型效果一般
-MAX_POWERS = 2000  # 2000
-MAX_ENEMY = 100  # 100
-MAX_BULLET = 2000  # 2000
-MAX_LASER = 250  # 250
+MAX_POWERS = 300  # 2000
+MAX_ENEMY = 30  # 100
+MAX_BULLET = 500  # 2000
+MAX_LASER = 50  # 250
 
 # TouHouEnv 控制SendInput的输入间隔
 PRESS_INTERVAL = 0.015
@@ -34,7 +34,7 @@ BORDER_LINE_PUNISH = -6  # 处于边界线上的代价
 DQN_learning_rate = 0.0005  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
 DQN_buffer_size = 20_000  # *一个整数，表示回放缓存的大小。它用于存储先前的观测和动作，以便在训练期间进行回放 默认为1_000_000
 DQN_learning_starts = 100  # *一个整数，表示在开始训练之前需要填充回放缓存的时间步数 默认50_000
-DQN_batch_size = 64  # *表示每个训练步骤中使用的样本数 32
+DQN_batch_size = 128  # *表示每个训练步骤中使用的样本数 32
 DQN_tau = 1.0  # 软更新系数（"Polyak update"，介于0和1之间），默认为1，用于硬更新。
 DQN_gamma = 0.99  # 表示折扣因子。它用于计算未来奖励的折现值。默认为0.99。越高可能越难训练
 DQN_train_freq = 4  # 每隔 train_step 个 step 更新一次模型
@@ -46,9 +46,9 @@ DQN_exploration_final_eps = 0.05  # 随机行动概率的最终值
 DQN_max_grad_norm = 10  # 梯度剪裁的最高值
 DQN_stats_window_size = 100  # 展开记录的窗口大小
 DQN_tensorboard_log = './log/tensorboard/'  # *创建tensorboard log
-DQN_policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256])  ## * 创建时传递给policy的额外参数
+DQN_policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[128, 128, 64, 64, 32])  ## * 创建时传递给policy的额外参数
 DQN_device = 'cuda:0'  # gpu训练
-DQN_verbose = 1  # 0无1正常2调试
+DQN_verbose = 2  # 0无1正常2调试
 # DQN训练评估
 TotalTimeSteps = 20_000
 EvalEpisodes = 10

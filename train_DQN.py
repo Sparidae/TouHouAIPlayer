@@ -4,13 +4,13 @@ import torch.nn
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 import pydirectinput
-from util.touhouEnv import TouHouEnv
+from util.touhou_env import TouHouEnv
 from util.window import activate_window
 from util.helpers import *
 from cfg.config import *
 
 model = None
-mean_reward = -1_000
+mean_reward = -100_000
 mean_reward_prev = -1_000_000
 std_reward = 0
 std_reward_prev = 0
@@ -70,7 +70,7 @@ while mean_reward > mean_reward_prev:
     pydirectinput.keyDown('ctrl')  # 尝试是否管用能跳过剧情
 
     # 训练 total_timesteps 表示采样的数量 即训练使用的state的数量
-    model.learn(total_timesteps=TotalTimeSteps)
+    model.learn(total_timesteps=TotalTimeSteps, tb_log_name='DQN'+get_short_timestr())
 
     # 模型评估evaluate
     # n_eval_episodes 表示测试回合的总数，用于计算模型的平均奖励和标准偏差。默认值为10
@@ -82,7 +82,7 @@ while mean_reward > mean_reward_prev:
     if mean_reward > mean_reward_prev and to_file:
         model.save(model_path)
         model.save_replay_buffer(buffer_path)
-        save_config('../cfg/config.py', model_path)
+        save_config('./cfg/config.py', model_path)
         env = model.get_env()
 
     # 释放按键

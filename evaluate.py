@@ -1,7 +1,7 @@
 import os
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
-from util.touhouEnv import TouHouEnv
+from util.touhou_env import TouHouEnv
 import time
 from util.window import activate_window
 import pydirectinput

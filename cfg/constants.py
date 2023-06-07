@@ -3,6 +3,8 @@
 # 读取内存 GetMemoryData
 PROCESS_VM_READ = 0x0010
 
+GAME_TITLE = '东方风神录 ～ Mountain of Faith. ver 1.00a '
+
 # TouHouEnv 状态空间范围控制参数
 L_X = 185  # x坐标的左右上限  184和-184
 L_PY = 433  # y坐标的上限 实为432

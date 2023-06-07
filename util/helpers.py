@@ -9,13 +9,20 @@ from scipy import stats
 
 # game = GameData()
 
-__all__ = ['get_timestr', 'save_config']
+__all__ = ['get_timestr', 'save_config','get_short_timestr']
 
 
 def get_timestr():
     timestamp = int(time.time())
     time_struct = time.localtime(timestamp)
     time_str = time.strftime("%Y-%m-%d_%H-%Mm", time_struct)
+    return time_str
+
+
+def get_short_timestr():
+    timestamp = int(time.time())
+    time_struct = time.localtime(timestamp)
+    time_str = time.strftime("%m%d_%H%M", time_struct)
     return time_str
 
 
@@ -87,7 +94,8 @@ def _way():
 
 if __name__ == "__main__":
     time.sleep(3)
-    save_config('../cfg/config.py', '../log/1/config')
+    print(get_short_timestr())
+    # save_config('../cfg/config.py', '../log/1/config')
     # # get_max_volume()
     # # _way()
     # a = []
