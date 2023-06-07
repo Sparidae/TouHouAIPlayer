@@ -4,7 +4,7 @@ import torch.nn
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 import pydirectinput
-from util.touhou2D import TouHouEnv
+from util.touhouEnv import TouHouEnv
 from util.window import activate_window
 from util.helpers import get_timestr
 
