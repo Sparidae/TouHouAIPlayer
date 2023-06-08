@@ -92,10 +92,10 @@ class GameData:
             'score': np.array([self.score]),
             'power': np.array([self.power]),
             'extra_life': np.array([self.extra_life]),
-            'powers': powers,
+            'powers': powers,  # 奖励物品
             'enemy': enemy,
             'bullet': bullet,
-            'laser': laser,
+            'laser': laser,  # 激光
         }
 
     def get_player_data(self):

@@ -5,6 +5,7 @@ import numpy as np
 import pydirectinput
 from util.get_memory_data import GameData
 from util.get_img_data import img_capture
+from util.get_img_data import _generate_observation
 from util.window import activate_window
 from util.send_input import Keyboard
 from cfg.constants import *
@@ -23,7 +24,8 @@ class TouHouImageEnv(gym.Env):
         self.action_space = spaces.Discrete(10)  # 动作空间 0，1，2，3，4，5，6，7 八个方向 8 x清空范围弹幕短暂无敌 9 什么也不做
 
         # 定义状态 img数组
-        self.state = img_capture(reshape=True)
+        # self.state = img_capture(reshape=True)
+        self.state = _generate_observation(self)
 
         # 需要reset()重置的变量
         # step计数
@@ -97,7 +99,8 @@ class TouHouImageEnv(gym.Env):
             reward = MOVE_REWARD
 
         # 更新状态
-        self.state = img_capture(reshape=True)
+        # self.state = img_capture(reshape=True)
+        self.state = _generate_observation(self)
         self.player_obs = self.datasource.get_player_data()
 
         if self.player_obs['score'][0] > prev_obs['score'][0]:
@@ -134,7 +137,8 @@ class TouHouImageEnv(gym.Env):
             pydirectinput.keyDown('z')
         else:  # 游戏刚开始的情况 现在方案：开始游戏后开始训练（ 取色脚本？ 图像识别？
             pass
-        self.state = img_capture(reshape=True)
+        # self.state = img_capture(reshape=True)
+        self.state = _generate_observation(self)
         self.player_obs = self.datasource.get_player_data()
         return self.state
 

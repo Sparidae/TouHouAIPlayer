@@ -3,6 +3,7 @@ import win32gui, win32ui, win32con, win32api
 from cfg.constants import *
 from PIL import Image
 import numpy as np
+from util.get_memory_data import GameData
 
 hwnd = win32gui.FindWindow(None, GAME_TITLE)  # 窗口的编号，0号表示当前活跃窗口
 w = 385
@@ -26,7 +27,7 @@ def img_capture(filename='instantGame.jpg', reshape=False):  # 需将窗口置�
     bmp_info = save_bit_map.GetInfo()
     bmp_str = save_bit_map.GetBitmapBits(True)
     image = Image.frombuffer('RGB', (w, h), bmp_str, 'raw', 'BGRX', 0, 1)
-    # image.save(filename)
+    image.save(filename)
     array = np.array(image)
     if reshape:
         array = np.transpose(array, (2, 0, 1))
@@ -34,6 +35,45 @@ def img_capture(filename='instantGame.jpg', reshape=False):  # 需将窗口置�
     # print('Array shape:', array.shape)
     return array
 
+
+def _generate_observation(self):
+    self.data = GameData()
+    self.state = self.data.get_formatted_data()
+    obs = np.zeros((w, h, 3), dtype=np.uint8)  # 设置矩阵的大小和游戏界面相同 385*451 底色为黑色
+
+    # 设置玩家的位置为蓝色 3*3
+    x_p, y_p = int(self.state['player'][0]), int(self.state['player'][1])
+    for i in range(3):
+        for j in range(3):
+            if x_p in range(w) and y_p in range(h):
+                obs[x_p-1+i, y_p-1+j] = np.array([0, 0, 255], dtype=np.uint8)
+
+    # Stack single layer into 3-channel-image.
+    # obs = np.stack((obs, obs, obs), axis=-1)
+
+    # 设置敌人的位置为红色 3*3
+    # x_e, y_e = self.state['enemy'][0], self.state['enemy'][1]
+    for enemy in self.state['enemy']:
+        x, y = int(enemy[0]), int(enemy[1])   # 获取每行的前两个元素作为坐标
+        if x in range(w) and y in range(h):
+            obs[x, y] = np.array([255, 0, 0], dtype=np.uint8)  # 设置对应坐标的像素颜色为红色
+
+    # 设置敌机子弹为绿色
+    for bullet in self.state['bullet']:
+        x, y = int(bullet[0]), int(bullet[1])  # 获取每行的前两个元素作为坐标
+        if x in range(w) and y in range(h):
+            obs[x, y] = np.array([0, 255, 0], dtype=np.uint8)
+
+    # 设置奖励物品为白色
+    for powers in self.state['powers']:
+        x, y = int(powers[0]), int(powers[1])  # 获取每行的前两个元素作为坐标
+        if x in range(w) and y in range(h):
+            obs[x, y] = np.array([255, 255, 255], dtype=np.uint8)
+
+    # Enlarge the observation to 84x84
+    # obs = np.repeat(np.repeat(obs, 7, axis=0), 7, axis=1)
+
+    return obs
 
 if __name__ == '__main__':
     beg = time.time()
