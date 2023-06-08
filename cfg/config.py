@@ -9,7 +9,7 @@ MAX_BULLET = 500  # 2000
 MAX_LASER = 50  # 250
 
 # TouHouEnv 控制SendInput的输入间隔
-PRESS_INTERVAL = 0.015
+PRESS_INTERVAL = 0.01
 
 # TouHouEnv
 MAX_DEAD_INV_FRAME = 40  # 死亡无敌帧step

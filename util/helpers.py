@@ -9,7 +9,19 @@ from scipy import stats
 
 # game = GameData()
 
-__all__ = ['get_timestr', 'save_config','get_short_timestr']
+__all__ = ['get_timestr', 'save_config', 'get_short_timestr', 'linear_schedule']
+
+
+def linear_schedule(initial_value, final_value=0.0):
+    if isinstance(initial_value, str):
+        initial_value = float(initial_value)
+        final_value = float(final_value)
+        assert (initial_value > 0.0)
+
+    def scheduler(progress):
+        return final_value + progress * (initial_value - final_value)
+
+    return scheduler
 
 
 def get_timestr():

@@ -5,6 +5,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 import pydirectinput
 from util.touhou_env import TouHouEnv
+from util.touhou_img_env import TouHouImageEnv
 from util.window import activate_window
 from util.helpers import *
 
@@ -18,9 +19,10 @@ policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
 # 是否需要保存模型和日志小开关 测试不需要输出时可用False
 to_file = True
 has_trained_before = False
+is_img_env = True
 
 # 引入环境
-env = TouHouEnv()
+env = TouHouImageEnv() if is_img_env else TouHouEnv()
 time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
@@ -31,9 +33,11 @@ while mean_reward > mean_reward_prev:
     # 当表现比上次训练的好
     if model is None:  # 第一轮训练 创建模型
         # 创建模型 需要调参！4
-        model = PPO(policy="MultiInputPolicy",  # 对spaces.dict必须是MultiInputPolicy CnnPolicy
+        lr_schedule = linear_schedule(2.5e-4, 2.5e-6)
+        clip_range_schedule = linear_schedule(0.150, 0.025)
+        model = PPO(policy="CnnPolicy" if is_img_env else "MultiInputPolicy",
                     env=env,
-                    learning_rate=0.0003,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
+                    learning_rate=lr_schedule,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
                     batch_size=128,  # *表示每个训练步骤中使用的样本数 32
                     n_steps=2048,  # 每次更新时运行每个环境的步数，即回合缓冲区大小是n_steps * n_envs，其中n_envs是并行运行的环境数。
                     # 注意：n_steps * n_envs必须大于1（因为需要进行优势归一化）。
@@ -51,7 +55,7 @@ while mean_reward > mean_reward_prev:
                     target_kl=None,  # 限制更新之间的KL散度，因为裁剪无法防止大更新。默认情况下，kl散度没有限制
                     stats_window_size=100,  # 回合记录日志的窗口大小，指定要平均报告的成功率、平均回合长度和平均奖励的回合数。
                     tensorboard_log='./log/tensorboard/' if to_file else None,  # *创建tensorboard log
-                    policy_kwargs=policy_kwargs,  # * 创建时传递给policy的额外参数
+                    policy_kwargs=None if is_img_env else policy_kwargs,  # * 创建时传递给policy的额外参数
                     device='cuda:0',  # gpu训练
                     verbose=1)
     else:  # 第二轮之后的训练
@@ -84,7 +88,6 @@ while mean_reward > mean_reward_prev:
     # 判断是否更优优则存储
     if mean_reward > mean_reward_prev and to_file:
         model.save(model_path)
-        # model.save_replay_buffer(buffer_path)
         env = model.get_env()
 
     # 释放按键
