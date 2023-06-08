@@ -21,14 +21,16 @@ time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
 print('model_path:', model_path)
-custom_cnn = CustomCNN(observation_space=env.observation_space)
+# custom_cnn = CustomCNN(observation_space=env.observation_space)
 model = None
 mean_reward = -100_000
 mean_reward_prev = -1_000_000
 std_reward = 0
 std_reward_prev = 0
-policy_kwargs = {"features_extractor_class": custom_cnn} if is_img_env else dict(activation_fn=torch.nn.Tanh,
-                                                                                 net_arch=[256, 256, 256])
+policy_kwargs = dict(
+    features_extractor_class=CustomCNN,
+    features_extractor_kwargs=dict(features_dim=128),
+) if is_img_env else dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
 
 
 # Loop Start
