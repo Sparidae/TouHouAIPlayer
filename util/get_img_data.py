@@ -9,7 +9,7 @@ w = 385
 h = 451
 
 
-def img_capture(filename='instantGame.jpg'):  # 需将窗口置于前台，不能最小化
+def img_capture(filename='instantGame.jpg', reshape=False):  # 需将窗口置于前台，不能最小化
     # 根据窗口句柄获取窗口的设备上下文DC（Device Context）
     hwnd_dc = win32gui.GetWindowDC(hwnd)
     # 根据窗口的DC获取mfcDC mfcDC创建可兼容的DC 创建big_map准备保存图片
@@ -28,7 +28,8 @@ def img_capture(filename='instantGame.jpg'):  # 需将窗口置于前台，不�
     image = Image.frombuffer('RGB', (w, h), bmp_str, 'raw', 'BGRX', 0, 1)
     # image.save(filename)
     array = np.array(image)
-    # array = np.transpose(array, (2, 0, 1))
+    if reshape:
+        array = np.transpose(array, (2, 0, 1))
     # array = array.astype('float32')
     # print('Array shape:', array.shape)
     return array

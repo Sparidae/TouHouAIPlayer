@@ -8,13 +8,7 @@ from util.touhou_env import TouHouEnv
 from util.touhou_img_env import TouHouImageEnv
 from util.window import activate_window
 from util.helpers import *
-
-model = None
-mean_reward = -100_000
-mean_reward_prev = -1_000_000
-std_reward = 0
-std_reward_prev = 0
-policy_kwargs = dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
+from util.CustomCNN import CustomCNN
 
 # 是否需要保存模型和日志小开关 测试不需要输出时可用False
 to_file = True
@@ -27,6 +21,15 @@ time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
 print('model_path:', model_path)
+custom_cnn = CustomCNN(observation_space=env.observation_space)
+model = None
+mean_reward = -100_000
+mean_reward_prev = -1_000_000
+std_reward = 0
+std_reward_prev = 0
+policy_kwargs = {"features_extractor_class": custom_cnn} if is_img_env else dict(activation_fn=torch.nn.Tanh,
+                                                                                 net_arch=[256, 256, 256])
+
 
 # Loop Start
 while mean_reward > mean_reward_prev:
@@ -55,7 +58,7 @@ while mean_reward > mean_reward_prev:
                     target_kl=None,  # 限制更新之间的KL散度，因为裁剪无法防止大更新。默认情况下，kl散度没有限制
                     stats_window_size=100,  # 回合记录日志的窗口大小，指定要平均报告的成功率、平均回合长度和平均奖励的回合数。
                     tensorboard_log='./log/tensorboard/' if to_file else None,  # *创建tensorboard log
-                    policy_kwargs=None if is_img_env else policy_kwargs,  # * 创建时传递给policy的额外参数
+                    policy_kwargs=policy_kwargs,  # * 创建时传递给policy的额外参数
                     device='cuda:0',  # gpu训练
                     verbose=1)
     else:  # 第二轮之后的训练
@@ -77,7 +80,7 @@ while mean_reward > mean_reward_prev:
     pydirectinput.keyDown('ctrl')  # 尝试是否管用能跳过剧情
 
     # 训练 total_timesteps 表示采样的数量 即训练使用的state的数量
-    model.learn(total_timesteps=20_000, tb_log_name='PPO'+get_short_timestr())
+    model.learn(total_timesteps=20_000, tb_log_name='PPO' + get_short_timestr())
 
     # 模型评估evaluate
     # n_eval_episodes 表示测试回合的总数，用于计算模型的平均奖励和标准偏差。默认值为10

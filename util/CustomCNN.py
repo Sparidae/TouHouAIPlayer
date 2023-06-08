@@ -33,7 +33,7 @@ class CustomCNN(BaseFeaturesExtractor):
         self,
         observation_space: spaces.Box,
         features_dim: int = 256,  # 512
-        normalized_image: bool = False,
+        normalized_image: bool = True,
     ) -> None:
         super().__init__(observation_space, features_dim)
         # We assume CxHxW images (channels first)
@@ -51,13 +51,13 @@ class CustomCNN(BaseFeaturesExtractor):
         )
         n_input_channels = observation_space.shape[0]
         self.cnn = nn.Sequential(
-            nn.Conv2d(n_input_channels, 16, kernel_size=8, stride=4, padding=0),
+            nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4, padding=0),
             nn.ReLU(),
             # nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=0),
             # nn.ReLU(),
             # nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0),
             # nn.ReLU(),
-            nn.Conv2d(64, 32, kernel_size=4, stride=2, padding=0),  # new add
+            nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=0),  # new add
             nn.ReLU(),
             nn.Flatten(),
         )
