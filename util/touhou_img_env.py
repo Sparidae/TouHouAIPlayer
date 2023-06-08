@@ -14,7 +14,12 @@ from cfg.config import *
 class TouHouImageEnv(gym.Env):
     def __init__(self):
         # 定义状态空间和动作空间
-        self.observation_space = spaces.Box(low=0.0, high=255.0, shape=(451, 385, 3))
+        self.observation_space = spaces.Box(
+            low=0,
+            high=255,
+            shape=(451, 385, 3),
+            dtype=np.uint8
+        )
         self.action_space = spaces.Discrete(10)  # 动作空间 0，1，2，3，4，5，6，7 八个方向 8 x清空范围弹幕短暂无敌 9 什么也不做
 
         # 定义状态 img数组
@@ -103,7 +108,7 @@ class TouHouImageEnv(gym.Env):
             reward += -4
 
         if self.player_obs['extra_life'][0] < prev_obs['extra_life'][0]:
-            reward += (1+(3-1)*self.player_obs['score']/1_000_000)*(-300)
+            reward += (1+(3-1)*self.player_obs['score'][0]/1_000_000)*(-300)
 
         # 判断是否终止
         done = self._is_done()

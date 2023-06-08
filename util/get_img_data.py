@@ -29,8 +29,8 @@ def img_capture(filename='instantGame.jpg'):  # 需将窗口置于前台，不�
     # image.save(filename)
     array = np.array(image)
     # array = np.transpose(array, (2, 0, 1))
-    array = array.astype('float32')
-    print('Array shape:', array.shape)
+    # array = array.astype('float32')
+    # print('Array shape:', array.shape)
     return array
 
 
