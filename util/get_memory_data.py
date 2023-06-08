@@ -98,6 +98,15 @@ class GameData:
             'laser': laser,
         }
 
+    def get_player_data(self):
+        self.__get_player_data()
+        return {
+            'player': np.array([self.player.x, self.player.y]),
+            'score': np.array([self.score]),
+            'power': np.array([self.power]),
+            'extra_life': np.array([self.extra_life]),
+        }
+
     def print_formatted_data(self):
         self.__data_update()
         print('Player(%.2f,%.2f)' % (self.player.x, self.player.y))

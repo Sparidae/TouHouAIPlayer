@@ -21,6 +21,7 @@ has_trained_before = False
 
 # 引入环境
 env = TouHouEnv()
+# env = TouHouImageEnv()
 time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
