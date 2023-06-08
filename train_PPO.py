@@ -21,7 +21,6 @@ time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
 print('model_path:', model_path)
-# custom_cnn = CustomCNN(observation_space=env.observation_space)
 model = None
 mean_reward = -100_000
 mean_reward_prev = -1_000_000
@@ -29,9 +28,9 @@ std_reward = 0
 std_reward_prev = 0
 policy_kwargs = dict(
     features_extractor_class=CustomCNN,
-    features_extractor_kwargs=dict(features_dim=128),
+    features_extractor_kwargs=dict(features_dim=512),
 ) if is_img_env else dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
-
+# policy_kwargs = None
 
 # Loop Start
 while mean_reward > mean_reward_prev:
@@ -43,7 +42,7 @@ while mean_reward > mean_reward_prev:
         model = PPO(policy="CnnPolicy" if is_img_env else "MultiInputPolicy",
                     env=env,
                     learning_rate=lr_schedule,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
-                    batch_size=128,  # *表示每个训练步骤中使用的样本数 32
+                    batch_size=64,  # *表示每个训练步骤中使用的样本数 128
                     n_steps=2048,  # 每次更新时运行每个环境的步数，即回合缓冲区大小是n_steps * n_envs，其中n_envs是并行运行的环境数。
                     # 注意：n_steps * n_envs必须大于1（因为需要进行优势归一化）。
                     n_epochs=10,  # 优化代理损失函数时的迭代次数。

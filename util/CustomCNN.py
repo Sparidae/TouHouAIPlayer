@@ -72,5 +72,4 @@ class CustomCNN(BaseFeaturesExtractor):
         self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU())
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
-        # observations = torch.tensor([obs.sample() for obs in observations], dtype=torch.float32)
         return self.linear(self.cnn(observations))
