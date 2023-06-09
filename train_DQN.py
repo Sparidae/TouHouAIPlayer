@@ -1,10 +1,10 @@
 import os
 import time
-import torch.nn
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
 import pydirectinput
-from util.touhou_env import TouHouEnv
+from game_env.touhou_env import TouHouEnv
+from game_env.touhou_dist_env import TouHouDistEnv
 from util.window import activate_window
 from util.helpers import *
 from cfg.config import *
@@ -20,8 +20,8 @@ to_file = True  # 可修改
 has_trained_before = False
 
 # 引入环境
-env = TouHouEnv()
-# env = TouHouImageEnv()
+# env = TouHouEnv()
+env = TouHouDistEnv()
 time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
@@ -32,7 +32,7 @@ while mean_reward > mean_reward_prev:
     # 当表现比上次训练的好
     if model is None:  # 第一轮训练 创建模型
         # 创建模型 需要调参！4
-        model = DQN(policy="MultiInputPolicy",  # 对spaces.dict必须是MultiInputPolicy CnnPolicy
+        model = DQN(policy="CnnPolicy",  # 对spaces.dict必须是MultiInputPolicy CnnPolicy
                     env=env,
                     learning_rate=DQN_learning_rate,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
                     buffer_size=DQN_buffer_size,  # *一个整数，表示回放缓存的大小。它用于存储先前的观测和动作，以便在训练期间进行回放 默认为1_000_000

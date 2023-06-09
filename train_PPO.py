@@ -4,8 +4,9 @@ import torch.nn
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 import pydirectinput
-from util.touhou_env import TouHouEnv
-from util.touhou_img_env import TouHouImageEnv
+from game_env.touhou_env import TouHouEnv
+from game_env.touhou_img_env import TouHouImageEnv
+from game_env.touhou_dist_env import TouHouDistEnv
 from util.window import activate_window
 from util.helpers import *
 from util.CustomCNN import CustomCNN
@@ -13,10 +14,10 @@ from util.CustomCNN import CustomCNN
 # 是否需要保存模型和日志小开关 测试不需要输出时可用False
 to_file = True
 has_trained_before = False
-is_img_env = True
+env_choice = 3
 
 # 引入环境
-env = TouHouImageEnv() if is_img_env else TouHouEnv()
+env = TouHouEnv() if env_choice == 1 else TouHouImageEnv() if env_choice == 2 else TouHouDistEnv()
 time_str = get_timestr()
 model_path = os.path.join('model', time_str, 'TouHouAI').replace("\\", "/")  # 相对路径
 buffer_path = os.path.join('model', time_str, 'TouHouAI_buffer').replace("\\", "/")
@@ -29,27 +30,25 @@ std_reward_prev = 0
 policy_kwargs = dict(
     features_extractor_class=CustomCNN,
     features_extractor_kwargs=dict(features_dim=512),
-) if is_img_env else dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
-# policy_kwargs = None
+) if env_choice == 2 else dict(activation_fn=torch.nn.Tanh, net_arch=[256, 256, 256])
+policy_kwargs = None
 
-# Loop Start
 while mean_reward > mean_reward_prev:
     # 当表现比上次训练的好
     if model is None:  # 第一轮训练 创建模型
         # 创建模型 需要调参！4
         lr_schedule = linear_schedule(2.5e-4, 2.5e-6)
         clip_range_schedule = linear_schedule(0.150, 0.025)
-        model = PPO(policy="CnnPolicy" if is_img_env else "MultiInputPolicy",
+        model = PPO(policy="CnnPolicy" if env_choice in [2, 3] else "MultiInputPolicy",
                     env=env,
-                    learning_rate=lr_schedule,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
-                    batch_size=64,  # *表示每个训练步骤中使用的样本数 128
+                    learning_rate=5e-4,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
+                    batch_size=128,  # *表示每个训练步骤中使用的样本数 128
                     n_steps=2048,  # 每次更新时运行每个环境的步数，即回合缓冲区大小是n_steps * n_envs，其中n_envs是并行运行的环境数。
                     # 注意：n_steps * n_envs必须大于1（因为需要进行优势归一化）。
                     n_epochs=10,  # 优化代理损失函数时的迭代次数。
                     gamma=0.99,  # 表示折扣因子。它用于计算未来奖励的折现值。默认为0.99。越高可能越难训练
                     gae_lambda=0.95,  # 广义优势估计（GAE）中偏差与方差的权衡因子
                     clip_range_vf=None,  # 价值函数裁剪的参数范围，可以是一个固定值，也可以是一个关于训练进度的函数。
-                    # 这是OpenAI实现的一个特定参数。如果传递None（默认值），则不会对价值函数进行裁剪
                     normalize_advantage=True,  # 是否对优势进行归一化
                     ent_coef=0.0,  # 用于损失计算的熵系数
                     vf_coef=0.5,  # 用于损失计算的价值函数系数
@@ -81,7 +80,7 @@ while mean_reward > mean_reward_prev:
     pydirectinput.keyDown('ctrl')  # 尝试是否管用能跳过剧情
 
     # 训练 total_timesteps 表示采样的数量 即训练使用的state的数量
-    model.learn(total_timesteps=20_000, tb_log_name='PPO' + get_short_timestr())
+    model.learn(total_timesteps=65536, tb_log_name='PPO' + get_short_timestr())
 
     # 模型评估evaluate
     # n_eval_episodes 表示测试回合的总数，用于计算模型的平均奖励和标准偏差。默认值为10

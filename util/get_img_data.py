@@ -6,8 +6,8 @@ import numpy as np
 from util.get_memory_data import GameData
 
 hwnd = win32gui.FindWindow(None, GAME_TITLE)  # 窗口的编号，0号表示当前活跃窗口
-w = 385
-h = 451
+w = 385 # 480
+h = 451 # 416
 
 hwnd_dc = win32gui.GetWindowDC(hwnd)
 # 根据窗口的DC获取mfcDC mfcDC创建可兼容的DC 创建big_map准备保存图片
