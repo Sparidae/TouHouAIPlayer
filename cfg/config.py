@@ -3,10 +3,10 @@ import torch
 # 配置文件 存储参数
 
 # TouHouEnv环境参数，规定了数据大小，必要情况下（如内存不足）可修改数量，但可能会面临信息丢失导致的模型效果一般
-MAX_POWERS = 300  # 2000
-MAX_ENEMY = 30  # 100
-MAX_BULLET = 500  # 2000
-MAX_LASER = 50  # 250
+MAX_POWERS = 2000  # 2000
+MAX_ENEMY = 100  # 100
+MAX_BULLET = 2000  # 2000
+MAX_LASER = 250  # 250
 
 # TouHouEnv 控制SendInput的输入间隔
 PRESS_INTERVAL = 0.015
@@ -20,7 +20,7 @@ DEAD_INV_PUNISH = -2  # 死亡无敌惩罚
 X_INV_PUNISH = -0.33  # x无敌惩罚
 X_INSTANT_PUNISH = -10  # x的即时惩罚
 MOVE_REWARD = 2  # 移动奖励
-DEAD_PUNISH = -100  # 失去生命惩罚
+DEAD_PUNISH = -300  # 失去生命惩罚
 OBTAIN_LIFE_REWARD = 300  # 获得生命奖励
 WALL_PUNISH = -10  # 撞墙的惩罚
 MAX_SCORE_REWARD_RATE = 3  # 最高SCORE-reward倍率

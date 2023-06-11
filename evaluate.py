@@ -8,14 +8,14 @@ from util.window import activate_window
 import pydirectinput
 
 # 读取模型
-env = TouHouDistEnv()  # !!
-model_dir = '2023-06-09_01-49m'  # 要查看的模型路径
+env = TouHouEnv()  # !!
+model_dir = '2023-06-05_17-01mTanh'  # 要查看的模型路径
 model_path = os.path.join('model', model_dir, 'TouHouAI')
 # model = DQN.load(model_path)
-model = PPO.load(model_path)
+model = DQN.load(model_path)
 
 # 准备工作
-print('---evaluation will start in 2 seconds---')
+print('---evaluation will start in 2 seco6262nds---')
 time.sleep(2)
 activate_window()  # 激活窗口
 pydirectinput.keyDown('z')

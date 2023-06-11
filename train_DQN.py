@@ -37,7 +37,7 @@ while mean_reward > mean_reward_prev:
                     learning_rate=DQN_learning_rate,  # *learning_rate参数是一个浮点数，表示学习率。它用于控制权重更新的速度。默认为1e-4
                     buffer_size=DQN_buffer_size,  # *一个整数，表示回放缓存的大小。它用于存储先前的观测和动作，以便在训练期间进行回放 默认为1_000_000
                     learning_starts=DQN_learning_starts,  # *一个整数，表示在开始训练之前需要填充回放缓存的时间步数 默认50_000
-                    batch_size=DQN_batch_size,  # *表示每个训练步骤中使用的样本数 32
+                    batch_size=DQN_batch_size,  # *表示每个训练步骤中使用的# 样本数 32
                     tau=DQN_tau,  # 软更新系数（"Polyak update"，介于0和1之间），默认为1，用于硬更新。
                     gamma=DQN_gamma,  # 表示折扣因子。它用于计算未来奖励的折现值。默认为0.99。越高可能越难训练
                     train_freq=DQN_train_freq,  # 每隔 train_step 个 step 更新一次模型

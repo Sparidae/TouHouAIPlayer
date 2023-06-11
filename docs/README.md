@@ -15,12 +15,20 @@ conda create -n touhou python=3.8.16
 conda activate touhou
 
 conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3
+conda install numpy 
 
-pip install psutil
-pip install pywin32 # 可以不用
-pip install pydirectinput 
-pip install stable_baselines3
+pip install psutil # 检测进程
+pip install pillow # 图像处理
+pip install pywin32 # win32api
+pip install pydirectinput # 模拟输入
+pip install stable_baselines3 # 包含gym
+pip install sb3-contrib  
 ```
+
+## 使用方法
+
+打开th10chs.exe,停留在一步enter即可开始游戏的环境，启动脚本
+默认训练为normal->灵梦->前方集中装备
 
 ## 查看log信息
 
@@ -41,37 +49,5 @@ tensorboard --logdir .\log\tensorboard\  查看log
 - Numpy: 1.23.5
 - Gym: 0.21.0
 
-## 数据分布
 
-1wstep+evaluate,
-一共产生了12385个score增量（判断奖励的部分），其中除去0只剩下1731条数据，再除去500以上的增量（极端情况最高3w但是很少），还剩下1486条数据，这1486条（1~
-500）数据的分布大概是这样的
-
-![img.png](img.png)
-
-power的话比较特殊，总共也是12385条数据，除去0
-只剩下424条数据，分布大概如上，这424条有增有减，减的情况是放大x或者死去（失去所有power）而这两种情况都有特殊的reward逻辑，所以只考虑增的情况有353条，其中251条123（对应自己捡的power），92条20左右40以下的（我猜大概是放大拿到的），10条40以上的（死了之后亲空全屏弹幕得到很多power）
-
-![img_1.png](img_1.png)
-![img_2.png](img_2.png)
-
-上面这个是power增加的分布
-
-
-## 待办
-
-- [x] 调参数 改操作游戏逻辑
-- [ ] 找到合适的reward
-- [x] 换cnnpolicy参数
-
-## 优化方向
-
-- [ ] gamedata部分使用原生numpy数组而非对象以减少开销
-- [x] sendinput()减少输入延迟
-- [ ] 使用取色脚本或者图像识别进行正确的游戏重置操作
-- [x] 代码重构 常量整理到文件中
-
-
-
-## 运行
 
